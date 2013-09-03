@@ -49,3 +49,19 @@ Feature: cli/install
     When I run `librarian-puppet install`
     Then the exit status should be 0
     And the file "modules/postgresql/Modulefile" should match /name *'puppetlabs-postgresql'/
+
+  Scenario: Source dependencies from Modulefile
+    Given a file named "Puppetfile" with:
+    """
+    forge "http://forge.puppetlabs.com"
+
+    modulefile
+    """
+    And a file named "Modulefile" with:
+    """
+    name "random name"
+    dependency "puppetlabs/postgresql", "2.4.1"
+    """
+    When I run `librarian-puppet install`
+    Then the exit status should be 0
+    And the file "modules/postgresql/Modulefile" should match /name *'puppetlabs-postgresql'/
