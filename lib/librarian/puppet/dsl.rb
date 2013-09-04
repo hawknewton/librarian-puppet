@@ -20,12 +20,10 @@ module Librarian
     class Receiver
       def modulefile
         File.read('Modulefile').lines.each do |line|
-          /^dependency/ =~ line && instance_eval(line)
+          regexp = /\s*dependency\s+('|")([^'"]+)\1\s*(?:,\s*('|")([^'"]+)\3)?/
+          regexp =~ line && mod($2, $4)
         end
       end
-
-      #alias_method won't work as mod has yet to be defined
-      def dependency(*args); mod *args; end
     end
   end
 end
